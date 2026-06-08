@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - backend_uploads:/app/uploads
+      - backend_chroma:/app/chroma_db
+      - backend_logs:/app/logs
+    environment:
+      - OPENAI_API_KEY=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
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-text-embedding-3-small}
+      - CHROMA_PERSIST_DIRECTORY=/app/chroma_db
+      - CHUNK_SIZE=1000
+      - CHUNK_OVERLAP=200
+      - TOP_K=5
+      - MAX_TOKENS=2000
+      - DEBUG=true
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  backend_uploads:
+  backend_chroma:
+  backend_logs:
