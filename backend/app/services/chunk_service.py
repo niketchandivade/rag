@@ -1,7 +1,7 @@
 from typing import List, Dict, Any
 from datetime import datetime
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from app.config import get_settings
 from app.utils.text_utils import clean_text
