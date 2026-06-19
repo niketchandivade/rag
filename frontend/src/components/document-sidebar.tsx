@@ -19,7 +19,6 @@ import { SkeletonDocument, SkeletonList } from '@/components/ui/skeleton';
 import {
   getDocuments,
   deleteDocument,
-  resetDocuments,
   DocumentInfo,
 } from '@/lib/api';
 import { cn } from '@/lib/utils';
@@ -213,35 +212,12 @@ export function DocumentSidebar({ onDocumentChange }: DocumentSidebarProps) {
     }
   };
 
-  const handleDelete = async (filename: string) => {
-    setDeleting(filename);
-    try {
-      await deleteDocument(filename);
-      setDocuments((prev) => prev.filter((doc) => doc.filename !== filename));
-      onDocumentChange();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete document');
-    } finally {
-      setDeleting(null);
-    }
-  };
-
-  const handleReset = async () => {
-    try {
-      await resetDocuments();
-      setDocuments([]);
-      onDocumentChange();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to reset');
-    }
-  };
-
   const totalSize = documents.reduce((acc, doc) => acc + doc.file_size, 0);
   const indexedCount = documents.filter(doc => doc.processed).length;
 
   return (
     <Card className="overflow-hidden border-2 border-transparent shadow-soft h-full">
-      <CardHeader className="bg-gradient-to-r from-card to-background border-b px-5 py-4">
+      <CardHeader className="relative bg-gradient-to-r from-card to-background border-b px-5 py-4">
         <CardTitle className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
             <FileText className="h-5 w-5 text-primary" />
@@ -281,25 +257,17 @@ export function DocumentSidebar({ onDocumentChange }: DocumentSidebarProps) {
           <EmptyState />
         ) : (
           <>
-            <div className="flex gap-2 p-4 border-b bg-muted/20">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={loadDocuments}
-                className="flex-1"
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleReset}
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
+           <div className="p-4 border-b bg-muted/20">
+  <Button
+    variant="outline"
+    size="sm"
+    onClick={loadDocuments}
+    className="w-full"
+  >
+    <RefreshCw className="h-4 w-4 mr-2" />
+    Refresh
+  </Button>
+</div>
             <ScrollArea className="h-[calc(100vh-320px)]">
               <div className="p-4 space-y-3 stagger-children">
                 {documents.map((doc) => (
