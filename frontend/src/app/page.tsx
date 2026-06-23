@@ -5,7 +5,15 @@ import { FileUploader } from '@/components/file-uploader';
 import { Chat } from '@/components/chat';
 import { DocumentSidebar } from '@/components/document-sidebar';
 import { DocumentInfo } from '@/lib/api';
-import { Sparkles, Github, ChevronDown, Menu, X } from 'lucide-react';
+import {
+  Sparkles,
+  Github,
+  Menu,
+  X,
+  Trash2
+} from 'lucide-react';
+
+import { resetDocuments } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
@@ -24,7 +32,24 @@ export default function Home() {
   const handleDocumentChange = useCallback(() => {
     setRefreshKey((prev) => prev + 1);
   }, []);
+  const handleResetAll = async () => {
+  const confirmed = window.confirm(
+    'Delete ALL documents and ALL ChromaDB chunks?'
+  );
 
+  if (!confirmed) return;
+
+  try {
+    await resetDocuments();
+
+    alert('All documents and vectors deleted.');
+
+    setRefreshKey((prev) => prev + 1);
+  } catch (error) {
+    console.error(error);
+    alert('Failed to reset documents.');
+  }
+};
   return (
     <div className="min-h-screen bg-background">
       {/* Background gradient effect */}
@@ -53,24 +78,38 @@ export default function Home() {
             </div>
 
             {/* Navigation - Desktop */}
-            <nav className="hidden md:flex items-center gap-6">
-              <a
-                href="#"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Docs
-              </a>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Github className="h-4 w-4" />
-                <span>GitHub</span>
-              </Button>
-            </nav>
+            <nav className="hidden md:flex items-center gap-4">
+  <a
+    href="#"
+    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+  >
+    Features
+  </a>
+
+  <a
+    href="#"
+    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+  >
+    Docs
+  </a>
+
+<div className="flex items-center gap-2">
+  <Button
+    variant="destructive"
+    size="sm"
+    onClick={handleResetAll}
+    className="gap-2"
+  >
+    <Trash2 className="h-4 w-4" />
+    <span>Clear DB</span>
+  </Button>
+
+  <Button variant="outline" size="sm" className="gap-2">
+    <Github className="h-4 w-4" />
+    <span>GitHub</span>
+  </Button>
+</div>
+</nav>
 
             {/* Mobile menu button */}
             <Button
