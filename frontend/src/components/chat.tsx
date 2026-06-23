@@ -34,6 +34,7 @@ import {
 } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
+
 interface ChatProps {
   sessionId?: string;
 }
@@ -267,6 +268,7 @@ export function Chat({ sessionId }: ChatProps) {
   const [docCount, setDocCount] = useState(0);
   const [showSources, setShowSources] = useState<Record<number, boolean>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -274,9 +276,10 @@ export function Chat({ sessionId }: ChatProps) {
   }, []);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+  messagesEndRef.current?.scrollIntoView({
+    behavior: "smooth",
+    block: "end",
+    });
   }, [messages, loading]);
 
   const checkDocumentCount = async () => {
@@ -391,6 +394,7 @@ export function Chat({ sessionId }: ChatProps) {
                   toggleSources={toggleSources}
                 />
               ))}
+              <div ref={messagesEndRef} />
               {loading && <LoadingState />}
               {error && (
                 <div className="flex items-center gap-2 text-sm text-red-500 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg animate-fade-in">
