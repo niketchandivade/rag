@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "RAG Chat - AI-Powered Document Assistant",
@@ -31,7 +32,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="light dark">
       <body className={cn("min-h-screen bg-background font-sans antialiased")}>
+        
+        
         {children}
+      <Toaster richColors position="bottom-right" />
+  
       </body>
     </html>
   );

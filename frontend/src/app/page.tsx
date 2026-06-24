@@ -15,6 +15,7 @@ import {
 
 import { resetDocuments } from '@/lib/api';
 import { Button } from '@/components/ui/button';
+import { toast } from "sonner";
 
 export default function Home() {
   const [sessionId] = useState(() => Math.random().toString(36).substring(7));
@@ -41,8 +42,8 @@ export default function Home() {
 
   try {
     await resetDocuments();
-
-    alert('All documents and vectors deleted.');
+    toast.success("All documents and vectors deleted.");
+   
 
     setRefreshKey((prev) => prev + 1);
   } catch (error) {
